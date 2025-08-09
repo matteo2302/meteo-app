@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';   
+import Meteoinfo from './MeteoInfo';  
 
 import './App.css';
 
@@ -27,7 +28,7 @@ useEffect(()=>{
       <h1>Meteo Loano</h1>
       {caricamento && <p>Caricamento...</p>}
       {errore && <p>{errore}</p>}
-      {meteo &&  <WeatherInfo meteo={meteo} />}
+      {meteo &&  <Meteoinfo meteo={meteo} />}
 
       
     </div>
