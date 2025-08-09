@@ -1,3 +1,18 @@
 .App {
   text-align: center;
 }
+
+.notte {
+  height: 100vh;
+  background-image: linear-gradient(to top, rgb(0, 0, 0), #1a1a1a 100%);
+}
+
+.giorno {
+  height: 100vh;
+  background-image: linear-gradient(to top, rgb(1, 102, 255), #AACFEF 100%);
+}
+
+h1 {
+  margin-top: 0px;
+  padding-top: 20px;
+}

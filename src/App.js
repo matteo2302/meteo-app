@@ -22,9 +22,14 @@ function App() {
     fecthMeteo();
   }, []);
 
+  let ora = meteo ? new Date(meteo.time).getHours() : null;
+  let classeOra = "";
+  if (ora !== null) {
+    classeOra = (ora >= 6 && ora < 18) ? "giorno" : "notte";
+  }
 
   return (
-    <div className="App">
+    <div className={`App ${classeOra ? " " + classeOra : ""}`}>
       <h1>Meteo Loano</h1>
       {caricamento && <p>Caricamento...</p>}
       {errore && <p>{errore}</p>}
