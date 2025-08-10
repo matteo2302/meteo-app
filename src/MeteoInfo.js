@@ -1,4 +1,6 @@
 function Meteoinfo({ meteo }) {
+
+    console.log(meteo);
     return (
 
         <div>
