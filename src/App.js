@@ -3,11 +3,8 @@ import Meteoinfo from './MeteoInfo';
 import FormMeteo from './FormMeteo';
 import './App.css';
 
-
-
-
 function App() {
-  let [meteo, setMeteo] = useState(null);
+  let [meteo, setMeteo] = useState([null]);
   let [caricamento, setCaricamento] = useState(true);
   let [errore, setErrore] = useState(null);
   let [coordinate, setCoordinate] = useState({ latitude: null, longitude: null });
@@ -19,7 +16,7 @@ function App() {
         try {
           let resMeteo = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${coordinate.latitude}&longitude=${coordinate.longitude}&current_weather=true`);
           let dataMeteo = await resMeteo.json();
-          setMeteo(dataMeteo.current_weather);
+          setMeteo([...meteo, dataMeteo.current_weather]);
           setCaricamento(false);
         } catch (err) {
           setErrore("errore nel caricamento dei dati");
