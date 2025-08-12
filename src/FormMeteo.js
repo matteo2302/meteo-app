@@ -12,8 +12,8 @@ function FormMeteo({ setCoordinate, setCaricamento, setErrore }) {
             if (!data.results || data.results.length === 0) {
                 throw new Error("Città non trovata");
             }
-            let { latitude, longitude } = data.results[0];
-            setCoordinate({ latitude, longitude });
+            let { latitude, longitude, name } = data.results[0];
+            setCoordinate({ latitude, longitude, nome: name });
 
         } catch (err) {
             setErrore("Errore nel caricamento dei dati");

@@ -4,6 +4,7 @@ function Meteoinfo({ meteo }) {
     return (
 
         <div>
+            <h5>{meteo.nome}</h5>
             <p>ora di rilevazione:{new Date(meteo.time).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</p>
             <p>Temperatura: {meteo.temperature} °C</p>
             <p>Velocità vento: {meteo.windspeed} km/h</p>
