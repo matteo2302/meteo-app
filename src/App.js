@@ -6,7 +6,7 @@ import './App.css';
 
 function App() {
   let [meteo, setMeteo] = useState([]);
-  let [caricamento, setCaricamento] = useState(true);
+  let [caricamento, setCaricamento] = useState(null);
   let [errore, setErrore] = useState(null);
   let [coordinate, setCoordinate] = useState({ latitude: null, longitude: null, nome: "" });
 
@@ -14,6 +14,7 @@ function App() {
   useEffect(() => {
     if (coordinate.latitude && coordinate.longitude) {
       const fetchMeteo = async () => {
+        setCaricamento(true);
         try {
           let resMeteo = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${coordinate.latitude}&longitude=${coordinate.longitude}&current_weather=true`);
           let dataMeteo = await resMeteo.json();
@@ -41,9 +42,9 @@ function App() {
 
   return (
     <div className={`App ${classeOra}`}>
-      <h1>Meteo</h1>
+      <h1 className='text-center'>Meteo</h1>
       <FormMeteo setCoordinate={setCoordinate} setCaricamento={setCaricamento} setErrore={setErrore} />
-      {caricamento && <p>Caricamento...</p>}
+      {caricamento && <p className="text-center" >Caricamento...</p>}
       {errore && <p>{errore}</p>}
       <div className='d-flex'>
         {meteo.map((m, index) => (

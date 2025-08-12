@@ -22,7 +22,7 @@ function FormMeteo({ setCoordinate, setCaricamento, setErrore }) {
         }
     }
     return (
-        <form onSubmit={handleSubmit}>
+        <form className="text-center" onSubmit={handleSubmit}>
             <input onChange={(e) => setCitta(e.target.value)} value={citta} type="text" placeholder="inserire la città" />
             <button type='submit'>cerca</button>
         </form>
