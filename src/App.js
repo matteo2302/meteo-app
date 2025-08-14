@@ -1,28 +1,43 @@
-import { useState, useEffect } from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { useReducer, useState, useEffect } from 'react';
 import Meteoinfo from './MeteoInfo';
 import FormMeteo from './FormMeteo';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
-function App() {
-  let [meteo, setMeteo] = useState([]);
-  let [caricamento, setCaricamento] = useState(null);
-  let [errore, setErrore] = useState(null);
-  let [coordinate, setCoordinate] = useState({ latitude: null, longitude: null, nome: "" });
+//reducer function
+function reducer(state, action) {
+  switch (action.type) {
+    case "LOADING":
+      return { ...state, caricamento: true, errore: null };
+    case "SUCCESS":
+      return { ...state, caricamento: false, meteo: [...state.meteo, action.payload] };
+    case "ERROR":
+      return { ...state, caricamento: false, errore: action.payload }
+  }
 
+}
+function App() {
+  let initialState = {
+    meteo: [],
+    caricamento: false,
+    errore: null,
+  };
+  let [coordinate, setCoordinate] = useState({ latitude: null, longitude: null, nome: "" });
+  let [state, dispatch] = useReducer(reducer, initialState);
   //effettuo la chiamata api per ottenere i dati del meteo
   useEffect(() => {
     if (coordinate.latitude && coordinate.longitude) {
       const fetchMeteo = async () => {
-        setCaricamento(true);
+        dispatch({ type: "LOADING" });
         try {
-          let resMeteo = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${coordinate.latitude}&longitude=${coordinate.longitude}&current_weather=true`);
+          let resMeteo = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${coordinate.latitude}&longitude=${coordinate.longitude}&current_weather=true`
+          );
           let dataMeteo = await resMeteo.json();
-          setCaricamento(false);
-          setMeteo(prev => [...prev, { ...dataMeteo.current_weather, nome: coordinate.nome }]);
+          dispatch({
+            type: "SUCCESS", payload: { ...dataMeteo.current_weather, nome: coordinate.nome }
+          });
         } catch (err) {
-          setErrore("errore nel caricamento dei dati");
-          setCaricamento(false);
+          dispatch({ type: "ERROR", payload: "errore  nel caricamento dei dati" });
         }
       };
 
@@ -33,7 +48,7 @@ function App() {
 
 
   //leggo l'ora del meteo e gestisco la classe dimanica applicata
-  let ultimaCitta = meteo.length > 0 ? meteo[meteo.length - 1] : null;
+  let ultimaCitta = state.meteo.length > 0 ? state.meteo[state.meteo.length - 1] : null;
   let ora = ultimaCitta ? new Date(ultimaCitta.time).getHours() : null;
   let classeOra = "";
   if (ora !== null) {
@@ -43,11 +58,11 @@ function App() {
   return (
     <div className={`App ${classeOra}`}>
       <h1 className='text-center'>Meteo</h1>
-      <FormMeteo setCoordinate={setCoordinate} setCaricamento={setCaricamento} setErrore={setErrore} />
-      {caricamento && <p className="text-center" >Caricamento...</p>}
-      {errore && <p>{errore}</p>}
+      <FormMeteo setCoordinate={setCoordinate} dispatch={dispatch} />
+      {state.caricamento && <p className="text-center" >Caricamento...</p>}
+      {state.errore && <p>{state.errore}</p>}
       <div className='d-flex'>
-        {meteo.map((m, index) => (
+        {state.meteo.map((m, index) => (
           < Meteoinfo key={index} meteo={m} />))}
       </div>
 

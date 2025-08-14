@@ -1,11 +1,11 @@
 import { useState } from "react"
 
-function FormMeteo({ setCoordinate, setCaricamento, setErrore }) {
+function FormMeteo({ setCoordinate, dispatch }) {
     let [citta, setCitta] = useState("");
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (citta.trim() === "") return;
-        setCaricamento(true);
+        dispatch({ type: "LOADING" });
         try {
             let res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${citta}`);
             let data = await res.json();
@@ -16,9 +16,7 @@ function FormMeteo({ setCoordinate, setCaricamento, setErrore }) {
             setCoordinate({ latitude, longitude, nome: name });
 
         } catch (err) {
-            setErrore("Errore nel caricamento dei dati");
-        } finally {
-            setCaricamento(false);
+            dispatch({ type: "ERRORE", payload: "citta non trovata" })
         }
     }
     return (
