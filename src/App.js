@@ -2,6 +2,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { useReducer, useState, useEffect } from 'react';
 import Meteoinfo from './MeteoInfo';
 import FormMeteo from './FormMeteo';
+import PreferMeteo from './PreferMeteo';
 import './App.css';
 
 //reducer function
@@ -24,6 +25,10 @@ function App() {
   };
   let [coordinate, setCoordinate] = useState({ latitude: null, longitude: null, nome: "" });
   let [state, dispatch] = useReducer(reducer, initialState);
+  let [preferiti, setPreferiti] = useState(() => {
+    let saved = localStorage.getItem("preferiti");
+    return saved ? JSON.parse(saved) : [];
+  });
   //effettuo la chiamata api per ottenere i dati del meteo
   useEffect(() => {
     if (coordinate.latitude && coordinate.longitude) {
@@ -37,7 +42,10 @@ function App() {
           let [dataMeteo, dataImage] = await Promise.all([meteoPromise, imagePromise]);
           let imageUrl = dataImage.results.length > 0 ? dataImage.results[0].urls.small : null
           dispatch({
-            type: "SUCCESS", payload: { ...dataMeteo.current_weather, nome: coordinate.nome, image: imageUrl }
+            type: "SUCCESS", payload: {
+              ...dataMeteo.current_weather, nome: coordinate.nome, image: imageUrl, latitude: coordinate.latitude,
+              longitude: coordinate.longitude
+            }
           });
         } catch (err) {
           dispatch({ type: "ERROR", payload: "errore  nel caricamento dei dati" });
@@ -48,6 +56,19 @@ function App() {
     }
   }, [coordinate]);
 
+  let aggiungiPreferito = (citta) => {
+    if (!preferiti.some(p => p.nome === citta.nome)) {
+      let nuoviPreferiti = [...preferiti, citta];
+      setPreferiti(nuoviPreferiti);
+      localStorage.setItem("preferiti", JSON.stringify(nuoviPreferiti));
+    }
+  };
+
+  let rimuoviPreferito = (nome) => {
+    let nuoviPreferiti = preferiti.filter(c => c.nome !== nome);
+    setPreferiti(nuoviPreferiti);
+    localStorage.setItem("preferiti", JSON.stringify(nuoviPreferiti));
+  };
 
 
   //leggo l'ora del meteo e gestisco la classe dimanica applicata
@@ -67,9 +88,11 @@ function App() {
       <div className='d-flex'>
 
         {state.meteo.map((m, index) => (
-          < Meteoinfo key={index} meteo={m} />))}
+          < Meteoinfo key={index} meteo={m} aggiungiPreferito={aggiungiPreferito} />))}
       </div>
-
+      <PreferMeteo preferiti={preferiti}
+        onSeleziona={(c) => setCoordinate(c)}
+        onRimuovi={rimuoviPreferito} />
     </div>
   );
 }

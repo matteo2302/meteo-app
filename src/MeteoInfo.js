@@ -1,5 +1,5 @@
 import styles from './MeteoInfo.module.css';
-function Meteoinfo({ meteo }) {
+function Meteoinfo({ meteo, aggiungiPreferito }) {
 
     console.log(meteo);
     return (
@@ -9,6 +9,7 @@ function Meteoinfo({ meteo }) {
             {meteo.image && <img src={meteo.image} alt={meteo.nome} style={{ width: '200px', borderRadius: '8px' }} />}
             < div >
                 <h5 className={styles.titleBox}>{meteo.nome}</h5>
+                <button onClick={() => aggiungiPreferito(meteo)} className={`btn btn-primary ${styles.customButton}`}> ⭐ Aggiungi ai preferiti</button>
             </div >
             <ul className={`${styles.customList} list-unstyled`}>
                 <li>ora di rilevazione:{new Date(meteo.time).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</li>
