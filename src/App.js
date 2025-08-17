@@ -30,11 +30,14 @@ function App() {
       const fetchMeteo = async () => {
         dispatch({ type: "LOADING" });
         try {
-          let resMeteo = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${coordinate.latitude}&longitude=${coordinate.longitude}&current_weather=true`
-          );
-          let dataMeteo = await resMeteo.json();
+          let meteoPromise = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${coordinate.latitude}&longitude=${coordinate.longitude}&current_weather=true`)
+            .then(res => res.json());
+          let imagePromise = await fetch(`https://api.unsplash.com/search/photos?query=${coordinate.nome}&client_id=9zAzArCOCHTpXyhjUSraVs9690aUNICS6oK4DYnWNMw`)
+            .then(res => res.json());
+          let [dataMeteo, dataImage] = await Promise.all([meteoPromise, imagePromise]);
+          let imageUrl = dataImage.results.length > 0 ? dataImage.results[0].urls.small : null
           dispatch({
-            type: "SUCCESS", payload: { ...dataMeteo.current_weather, nome: coordinate.nome }
+            type: "SUCCESS", payload: { ...dataMeteo.current_weather, nome: coordinate.nome, image: imageUrl }
           });
         } catch (err) {
           dispatch({ type: "ERROR", payload: "errore  nel caricamento dei dati" });
@@ -62,6 +65,7 @@ function App() {
       {state.caricamento && <p className="text-center" >Caricamento...</p>}
       {state.errore && <p>{state.errore}</p>}
       <div className='d-flex'>
+
         {state.meteo.map((m, index) => (
           < Meteoinfo key={index} meteo={m} />))}
       </div>

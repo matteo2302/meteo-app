@@ -6,6 +6,7 @@ function Meteoinfo({ meteo }) {
 
         //<div><h5>{meteo.nome}</h5><p>ora di rilevazione:{new Date(meteo.time).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</p><p>Temperatura: {meteo.temperature} °C</p><p>Velocità vento: {meteo.windspeed} km/h</p></div >///
         <div className={`card ${styles.customCard}`}>
+            {meteo.image && <img src={meteo.image} alt={meteo.nome} style={{ width: '200px', borderRadius: '8px' }} />}
             < div >
                 <h5 className={styles.titleBox}>{meteo.nome}</h5>
             </div >
