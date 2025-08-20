@@ -1,5 +1,8 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useReducer, useState, useEffect } from 'react';
+import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
+import Home from "./pages/Home";
+import Preferiti from "./pages/Preferiti";
 import Meteoinfo from './MeteoInfo';
 import FormMeteo from './FormMeteo';
 import PreferMeteo from './PreferMeteo';
@@ -69,8 +72,6 @@ function App() {
     setPreferiti(nuoviPreferiti);
     localStorage.setItem("preferiti", JSON.stringify(nuoviPreferiti));
   };
-
-
   //leggo l'ora del meteo e gestisco la classe dimanica applicata
   let ultimaCitta = state.meteo.length > 0 ? state.meteo[state.meteo.length - 1] : null;
   let ora = ultimaCitta ? new Date(ultimaCitta.time).getHours() : null;
@@ -80,20 +81,36 @@ function App() {
   }
 
   return (
-    <div className={`App ${classeOra}`}>
-      <h1 className='text-center'>Meteo</h1>
-      <FormMeteo setCoordinate={setCoordinate} dispatch={dispatch} />
-      {state.caricamento && <p className="text-center" >Caricamento...</p>}
-      {state.errore && <p>{state.errore}</p>}
-      <div className='d-flex'>
-
-        {state.meteo.map((m, index) => (
-          < Meteoinfo key={index} meteo={m} aggiungiPreferito={aggiungiPreferito} />))}
-      </div>
-      <PreferMeteo preferiti={preferiti}
-        onSeleziona={(c) => setCoordinate(c)}
-        onRimuovi={rimuoviPreferito} />
-    </div>
+    <Router>
+      <nav>
+        <Link to="/">Home</Link> | {""}
+        <Link to="/preferiti">Preferiti</Link>
+      </nav>
+      <Routes>
+        <Route
+          path="/"
+          element={<Home
+            meteo={state.meteo}
+            caricamento={state.caricamento}
+            errore={state.errore}
+            setCoordinate={setCoordinate}
+            dispatch={dispatch}
+            state={state}
+            aggiungiPreferito={aggiungiPreferito}
+            preferiti={preferiti}
+            rimuoviPreferito={rimuoviPreferito}
+            classeOra={classeOra} />}
+        />
+        <Route
+          path='/preferiti'
+          element={
+            <Preferiti
+              preferiti={preferiti}
+              onSeleziona={(c) => setCoordinate(c)}
+              onRimuovi={rimuoviPreferito} />}
+        />
+      </Routes>
+    </Router>
   );
 }
 
