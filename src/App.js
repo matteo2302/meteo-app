@@ -2,6 +2,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { useReducer, useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import Home from "./pages/Home";
+import { Navbar, Nav, Container } from 'react-bootstrap';
 import Preferiti from "./pages/Preferiti";
 import Meteoinfo from './MeteoInfo';
 import FormMeteo from './FormMeteo';
@@ -82,34 +83,44 @@ function App() {
 
   return (
     <Router>
-      <nav>
-        <Link to="/">Home</Link> | {""}
-        <Link to="/preferiti">Preferiti</Link>
-      </nav>
-      <Routes>
-        <Route
-          path="/"
-          element={<Home
-            meteo={state.meteo}
-            caricamento={state.caricamento}
-            errore={state.errore}
-            setCoordinate={setCoordinate}
-            dispatch={dispatch}
-            state={state}
-            aggiungiPreferito={aggiungiPreferito}
-            preferiti={preferiti}
-            rimuoviPreferito={rimuoviPreferito}
-            classeOra={classeOra} />}
-        />
-        <Route
-          path='/preferiti'
-          element={
-            <Preferiti
+      <Navbar bg="dark" data-bs-theme="dark" expand="lg" className="bg-body-tertiary">
+        <Container>
+          <Navbar.Brand href="#home">🌤️ MeteoApp</Navbar.Brand>
+          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          <Navbar.Collapse id="basic-navbar-nav">
+            <Nav className="me-auto">
+              <Nav.Link as={Link} to="/">Home</Nav.Link>
+              <Nav.Link as={Link} to="/preferiti">preferiti</Nav.Link>
+            </Nav>
+          </Navbar.Collapse>
+        </Container>
+      </Navbar>
+      <Container className='mt-4'>
+        <Routes>
+          <Route
+            path="/"
+            element={<Home
+              meteo={state.meteo}
+              caricamento={state.caricamento}
+              errore={state.errore}
+              setCoordinate={setCoordinate}
+              dispatch={dispatch}
+              state={state}
+              aggiungiPreferito={aggiungiPreferito}
               preferiti={preferiti}
-              onSeleziona={(c) => setCoordinate(c)}
-              onRimuovi={rimuoviPreferito} />}
-        />
-      </Routes>
+              rimuoviPreferito={rimuoviPreferito}
+              classeOra={classeOra} />}
+          />
+          <Route
+            path='/preferiti'
+            element={
+              <Preferiti
+                preferiti={preferiti}
+                onSeleziona={(c) => setCoordinate(c)}
+                onRimuovi={rimuoviPreferito} />}
+          />
+        </Routes>
+      </Container>
     </Router>
   );
 }
