@@ -92,6 +92,8 @@ function App() {
             <Nav className="me-auto">
               <Nav.Link as={Link} to="/">Home</Nav.Link>
               <Nav.Link as={Link} to="/preferiti">preferiti</Nav.Link>
+              <Nav.Link as={Link} to="/DettagliMeteo">dettagli</Nav.Link>
+
             </Nav>
           </Navbar.Collapse>
         </Container>
