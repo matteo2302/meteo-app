@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import Home from "./pages/Home";
 import { Navbar, Nav, Container } from 'react-bootstrap';
 import Preferiti from "./pages/Preferiti";
+import DettagliMeteo from './pages/DettagliMeteo';
 import Meteoinfo from './MeteoInfo';
 import FormMeteo from './FormMeteo';
 import PreferMeteo from './PreferMeteo';
@@ -118,6 +119,15 @@ function App() {
                 preferiti={preferiti}
                 onSeleziona={(c) => setCoordinate(c)}
                 onRimuovi={rimuoviPreferito} />}
+          />
+          <Route
+            path='/DettagliMeteo/:nome'
+            element={
+              <DettagliMeteo
+                meteo={state.meteo}
+
+
+              />}
           />
         </Routes>
       </Container>
