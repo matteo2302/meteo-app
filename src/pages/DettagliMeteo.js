@@ -1,16 +1,20 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
+import useMeteo from "../hooks/useMeteo";
 
-function DettagliMeteo({ meteo }) {
+function DettagliMeteo() {
     let { nome } = useParams();
-    let citta = meteo.find(m => m.nome === nome);
-    if (!citta) return <p>nessun dettaglio disponibile per {nome}</p>
+    const { meteo, caricamento, errore } = useMeteo(nome);
+
+    if (caricamento) return <p>Caricamento...</p>;
+    if (errore) return <p>Errore: {errore}</p>;
+    if (!meteo) return <p>Nessun dato disponibile</p>;
     return (
         <div>
-            <h2>dettaglio meteo di {citta.nome}</h2>
-            <p>🌡️ Temperatura: {citta.temperature}°C</p>
-            <p>💨 Vento: {citta.windspeed} km/h</p>
-            <p>📍 Ora rilevamento: {citta.time}</p>
+            <h2>dettaglio meteo di {meteo.nome}</h2>
+            <p>🌡️ Temperatura: {meteo.temperature}°C</p>
+            <p>💨 Vento: {meteo.windspeed} km/h</p>
+            <p>📍 Ora rilevamento: {meteo.time}</p>
         </div>
     );
 }
