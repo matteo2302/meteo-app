@@ -5,21 +5,22 @@ import PreferMeteo from '../PreferMeteo';
 
 
 
-export default function Home({ meteo, caricamento, errore, setCoordinate, dispatch, state, aggiungiPreferito, preferiti, rimuoviPreferito, classeOra }) {
+export default function Home({ meteo, caricamento, errore, setCoordinate, aggiungiPreferito, preferiti, rimuoviPreferito, classeOra }) {
     return (
-        <div className={`App ${classeOra}`}>
+        <div  >
             <h1 className='text-center'>Meteo</h1>
-            <FormMeteo setCoordinate={setCoordinate} dispatch={dispatch} />
-            {state.caricamento && <p className="text-center" >Caricamento...</p>}
-            {state.errore && <p>{state.errore}</p>}
+            <FormMeteo setCoordinate={setCoordinate} />
+            {caricamento && <p className="text-center" >Caricamento...</p>}
+            {errore && <p>{errore}</p>}
             <div className='d-flex'>
 
-                {state.meteo.map((m, index) => (
-                    < Meteoinfo key={index} meteo={m} aggiungiPreferito={aggiungiPreferito} />))}
+                {meteo && (
+                    <Meteoinfo meteo={meteo} aggiungiPreferito={aggiungiPreferito} />
+                )}
             </div>
             <PreferMeteo preferiti={preferiti}
                 onSeleziona={(c) => setCoordinate(c)}
                 onRimuovi={rimuoviPreferito} />
-        </div>
+        </div >
     );
 }

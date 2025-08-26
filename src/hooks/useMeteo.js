@@ -1,34 +1,29 @@
 import { useState, useEffect } from "react";
 
-function useMeteo(nomeCitta) {
+function useMeteo({ latitude, longitude, nomeCitta }) {
     let [meteo, setMeteo] = useState(null);
     let [caricamento, setCaricamento] = useState(true);
     let [errore, setErrore] = useState(null);
 
     useEffect(() => {
         if (!nomeCitta) return;
+        if (!longitude || !latitude) return;
 
         let fetchMeteo = async () => {
             setCaricamento(true);
             setErrore(null);
             try {
-                let resGeo = await fetch(
-                    `https://geocoding-api.open-meteo.com/v1/search?name=${nomeCitta}`
-                );
-                let dataGeo = await resGeo.json();
-
-                if (!dataGeo.results || dataGeo.results.length === 0) {
-                    throw new Error("Città non trovata");
-                }
-
-                let { latitude, longitude } = dataGeo.results[0];
-
-                let resMeteo = await fetch(
+                let meteoPromise = await fetch(
                     `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true`
-                );
-                let dataMeteo = await resMeteo.json();
+                ).then(res => res.json());
+                let imagePromise = await fetch(`https://api.unsplash.com/search/photos?query=${nomeCitta}&client_id=9zAzArCOCHTpXyhjUSraVs9690aUNICS6oK4DYnWNMw`
+                ).then(res => res.json());
 
-                setMeteo({ ...dataMeteo.current_weather, nome: nomeCitta });
+                let [dataMeteo, dataImage] = await Promise.all([meteoPromise, imagePromise]);
+                let imageUrl = dataImage.results.length > 0 ? dataImage.results[0].urls.small : null;
+
+
+                setMeteo({ ...dataMeteo.current_weather, nomeCitta, latitude, longitude, image: imageUrl });
             } catch (err) {
                 setErrore(err.message);
             } finally {
@@ -38,7 +33,7 @@ function useMeteo(nomeCitta) {
 
 
         fetchMeteo();
-    }, [nomeCitta]);
+    }, [latitude, longitude, nomeCitta]);
 
     return { meteo, caricamento, errore };
 }

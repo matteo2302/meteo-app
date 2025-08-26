@@ -1,17 +1,15 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { useReducer, useState, useEffect } from 'react';
+import { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import Home from "./pages/Home";
 import { Navbar, Nav, Container } from 'react-bootstrap';
 import Preferiti from "./pages/Preferiti";
 import DettagliMeteo from './pages/DettagliMeteo';
-import Meteoinfo from './MeteoInfo';
-import FormMeteo from './FormMeteo';
-import PreferMeteo from './PreferMeteo';
+import useMeteo from './hooks/useMeteo';
 import './App.css';
 
 //reducer function
-function reducer(state, action) {
+/*function reducer(state, action) {
   switch (action.type) {
     case "LOADING":
       return { ...state, caricamento: true, errore: null };
@@ -21,21 +19,21 @@ function reducer(state, action) {
       return { ...state, caricamento: false, errore: action.payload }
   }
 
-}
+}*/
 function App() {
-  let initialState = {
+  /*let initialState = {
     meteo: [],
     caricamento: false,
     errore: null,
-  };
-  let [coordinate, setCoordinate] = useState({ latitude: null, longitude: null, nome: "" });
-  let [state, dispatch] = useReducer(reducer, initialState);
+  };*/
+  let [coordinate, setCoordinate] = useState({ latitude: null, longitude: null, nomeitta: "" });
+  /*let [state, dispatch] = useReducer(reducer, initialState);*/
   let [preferiti, setPreferiti] = useState(() => {
     let saved = localStorage.getItem("preferiti");
     return saved ? JSON.parse(saved) : [];
   });
   //effettuo la chiamata api per ottenere i dati del meteo
-  useEffect(() => {
+  /*useEffect(() => {
     if (coordinate.latitude && coordinate.longitude) {
       const fetchMeteo = async () => {
         dispatch({ type: "LOADING" });
@@ -59,7 +57,11 @@ function App() {
 
       fetchMeteo();
     }
-  }, [coordinate]);
+  }, [coordinate]);*/
+
+
+  let { meteo, caricamento, errore } = useMeteo(coordinate);
+
 
   let aggiungiPreferito = (citta) => {
     if (!preferiti.some(p => p.nome === citta.nome)) {
@@ -74,13 +76,6 @@ function App() {
     setPreferiti(nuoviPreferiti);
     localStorage.setItem("preferiti", JSON.stringify(nuoviPreferiti));
   };
-  //leggo l'ora del meteo e gestisco la classe dimanica applicata
-  let ultimaCitta = state.meteo.length > 0 ? state.meteo[state.meteo.length - 1] : null;
-  let ora = ultimaCitta ? new Date(ultimaCitta.time).getHours() : null;
-  let classeOra = "";
-  if (ora !== null) {
-    classeOra = (ora >= 6 && ora < 18) ? "giorno" : "notte";
-  }
 
   return (
     <Router>
@@ -103,16 +98,16 @@ function App() {
           <Route
             path="/"
             element={<Home
-              meteo={state.meteo}
-              caricamento={state.caricamento}
-              errore={state.errore}
+              meteo={meteo}
+              caricamento={caricamento}
+              errore={errore}
               setCoordinate={setCoordinate}
-              dispatch={dispatch}
-              state={state}
+
+
               aggiungiPreferito={aggiungiPreferito}
               preferiti={preferiti}
               rimuoviPreferito={rimuoviPreferito}
-              classeOra={classeOra} />}
+            />}
           />
           <Route
             path='/preferiti'
@@ -126,9 +121,6 @@ function App() {
             path='/DettagliMeteo/:nome'
             element={
               <DettagliMeteo
-                meteo={state.meteo}
-
-
               />}
           />
         </Routes>
