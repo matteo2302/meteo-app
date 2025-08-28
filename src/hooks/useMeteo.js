@@ -6,8 +6,7 @@ function useMeteo({ latitude, longitude, nomeCitta }) {
     let [errore, setErrore] = useState(null);
 
     useEffect(() => {
-        if (!nomeCitta) return;
-        if (!longitude || !latitude) return;
+        if (!nomeCitta || !longitude || !latitude) { setCaricamento(false); return; }
 
         let fetchMeteo = async () => {
             setCaricamento(true);

@@ -26,7 +26,7 @@ function App() {
     caricamento: false,
     errore: null,
   };*/
-  let [coordinate, setCoordinate] = useState({ latitude: null, longitude: null, nomeitta: "" });
+  let [coordinate, setCoordinate] = useState({ latitude: null, longitude: null, nomeCitta: "" });
   /*let [state, dispatch] = useReducer(reducer, initialState);*/
   let [preferiti, setPreferiti] = useState(() => {
     let saved = localStorage.getItem("preferiti");
