@@ -1,11 +1,10 @@
 import { useState } from "react"
 
-function FormMeteo({ setCoordinate, dispatch }) {
+function FormMeteo({ setCoordinate }) {
     let [citta, setCitta] = useState("");
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (citta.trim() === "") return;
-        dispatch({ type: "LOADING" });
         try {
             let res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${citta}`);
             let data = await res.json();
@@ -16,7 +15,7 @@ function FormMeteo({ setCoordinate, dispatch }) {
             setCoordinate({ latitude, longitude, nome: name });
 
         } catch (err) {
-            dispatch({ type: "ERRORE", payload: "citta non trovata" })
+            console.error("Errore:", err.message);
         }
     }
     return (

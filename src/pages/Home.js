@@ -17,26 +17,18 @@ export default function Home({ meteo, caricamento, errore, setCoordinate, aggiun
             <FormMeteo setCoordinate={setCoordinate} />
             {caricamento && <p className="text-center" >Caricamento...</p>}
             {errore && <p>{errore}</p>}
-            <div className='d-flex'>
-
-                {meteo && (
-                    <Meteoinfo meteo={meteo} aggiungiPreferito={aggiungiPreferito} />
-                )}
-            </div>
             <h2>Risultati ricerca</h2>
-            {meteo && meteo.length > 0 ? (
-                meteo.map((c, i) => (
-                    <CardMeteo
-                        key={i}
-                        citta={c}
-                        onAggiungi={aggiungiPreferito}
-                        onRimuovi={rimuoviPreferito}
-                        isPreferito={preferiti.some(p => p.nome === c.nome)}
-                    />
-                ))
-            ) : (
-                <p>Nessun dato meteo disponibile</p>
-            )}
+            {meteo ? (
+                <CardMeteo
+                    citta={meteo}
+                    onAggiungi={aggiungiPreferito}
+                    onRimuovi={rimuoviPreferito}
+                    isPreferito={preferiti.some(p => p.nome === meteo.nome)}
+                />
+            )
+                : (
+                    <p>Nessun dato meteo disponibile</p>
+                )}
             <PreferMeteo preferiti={preferiti}
                 onSeleziona={(c) => setCoordinate(c)}
                 onRimuovi={rimuoviPreferito} /></div>
