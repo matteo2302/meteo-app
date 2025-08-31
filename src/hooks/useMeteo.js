@@ -1,72 +1,71 @@
-import { useState, useEffect } from "react";
+import { type } from "@testing-library/user-event/dist/type";
+import { useReducer, useEffect } from "react";
+function reducer(state, action) {
+    switch (action.type) {
+        case "LOADING":
+            return { ...state, caricamento: true, errore: null };
+        case "SUCCESS":
+            return { ...state, caricamento: false, meteo: action.payload };
+        case "ERROR":
+            return { ...state, caricamento: false, errore: action.payload };
+        default: return state;
+    }
+}
 
-function useMeteo({ latitude, longitude, nomeCitta }) {
-    let [meteo, setMeteo] = useState(null);
-    let [caricamento, setCaricamento] = useState(true);
-    let [errore, setErrore] = useState(null);
+function useMeteo(coordinate) {
+    let initialState = {
+        meteo: {
+            hourly: { time: [], temperature_2m: [] }
+        },
+        caricamento: false,
+        errore: null,
+    }
+    const [state, dispatch] = useReducer(reducer, initialState);
+
 
     useEffect(() => {
+        if (coordinate.latitude && coordinate.longitude) {
+            let fetchMeteo = async () => {
+                dispatch({ type: "LOADING" });
+                try {
+                    let meteoPromise = await fetch(
+                        `https://api.open-meteo.com/v1/forecast?latitude=${coordinate.latitude}&longitude=${coordinate.longitude}&current_weather=true&hourly=temperature_2m`
+                    ).then(res => res.json());
 
-        let fetchMeteo = async () => {
-            setCaricamento(true);
-            setErrore(null);
-            try {
-                let lat = latitude;
-                let lon = longitude;
-                let cityName = nomeCitta;
-                if ((!lat || !lon) && nomeCitta) {
-                    let res = await fetch(
-                        `https://geocoding-api.open-meteo.com/v1/search?name=${nomeCitta}`
-                    );
-                    const geoData = await res.json();
-                    if (!geoData.results || geoData.results.length === 0) {
-                        throw new Error("Città non trovata");
-                    }
-                    lat = geoData.results[0].latitude;
-                    lon = geoData.results[0].longitude;
-                    cityName = geoData.results[0].name;
+                    let imagePromise = await fetch(
+                        `https://api.unsplash.com/search/photos?query=${coordinate.nome}&client_id=9zAzArCOCHTpXyhjUSraVs9690aUNICS6oK4DYnWNMw`
+                    ).then(res => res.json());
+
+                    let [dataMeteo, dataImage] = await Promise.all([meteoPromise, imagePromise]);
+
+                    let imageUrl = dataImage.results.length > 0 ? dataImage.results[0].urls.small : null;
+
+                    dispatch({
+                        type: "SUCCESS",
+                        payload: {
+                            ...dataMeteo.current_weather,
+                            hourly: dataMeteo.hourly,
+                            nome: coordinate.nome,
+                            image: imageUrl,
+                            latitude: coordinate.latitude,
+                            longitude: coordinate.longitude,
+                        },
+                    });
+                } catch (err) {
+                    dispatch({ type: "ERROR", payload: "Errore nel caricamento dei dati" });
                 }
+            };
 
-                if (!lat || !lon) {
-                    setCaricamento(false);
-                    return;
-                }
+            fetchMeteo();
+        }
+    }, [coordinate]);
 
-                let meteoPromise = await fetch(
-                    `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m&current_weather=true`
-                ).then(res => res.json());
-                let imagePromise = await fetch(`https://api.unsplash.com/search/photos?query=${nomeCitta}&client_id=9zAzArCOCHTpXyhjUSraVs9690aUNICS6oK4DYnWNMw`
-                ).then(res => res.json());
-
-                let [dataMeteo, dataImage] = await Promise.all([meteoPromise, imagePromise]);
-                let imageUrl = dataImage.results.length > 0 ? dataImage.results[0].urls.small : null;
-
-
-                setMeteo({
-                    nome: cityName,
-                    latitude: lat,
-                    longitude: lon,
-                    image: imageUrl,
-                    temperature: dataMeteo.current_weather.temperature,
-                    windspeed: dataMeteo.current_weather.windspeed,
-                    current: dataMeteo.current_weather,
-                    hourly: dataMeteo.hourly
-                });
-
-
-
-            } catch (err) {
-                setErrore(err.message);
-            } finally {
-                setCaricamento(false);
-            }
-        };
-
-
-        fetchMeteo();
-    }, [latitude, longitude, nomeCitta]);
-
-    return { meteo, caricamento, errore };
+    return {
+        meteo: state.meteo,
+        caricamento: state.caricamento,
+        errore: state.errore
+    };
 }
+
 
 export default useMeteo;
