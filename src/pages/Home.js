@@ -1,22 +1,16 @@
 import React from 'react';
-import Meteoinfo from '../MeteoInfo';
 import FormMeteo from '../FormMeteo';
 import PreferMeteo from '../PreferMeteo';
-import CardMeteo from "../components/Card";
+import CardMeteo from "../components/CardMeteo";
 
-
-
-
-export default function Home({ meteo, caricamento, errore, setCoordinate, aggiungiPreferito, preferiti, rimuoviPreferito, classeOra }) {
-    if (caricamento) return <p>Caricamento...</p>;
-    if (errore) return <p>Errore: {errore}</p>;
-
+export default function Home({ meteo, caricamento, errore, setCoordinate, aggiungiPreferito, preferiti, rimuoviPreferito }) {
     return (
         <div className="App">
             <h1 className='text-center'>Meteo</h1>
             <FormMeteo setCoordinate={setCoordinate} />
-            {caricamento && <p className="text-center" >Caricamento...</p>}
+            {caricamento && <p className="text-center">Caricamento...</p>}
             {errore && <p>{errore}</p>}
+
             <h2>Risultati ricerca</h2>
             {meteo ? (
                 <CardMeteo
@@ -25,16 +19,15 @@ export default function Home({ meteo, caricamento, errore, setCoordinate, aggiun
                     onRimuovi={rimuoviPreferito}
                     isPreferito={preferiti.some(p => p.nome === meteo.nome)}
                 />
-            )
-                : (
-                    <p>Nessun dato meteo disponibile</p>
-                )}
-            <PreferMeteo preferiti={preferiti}
+            ) : (
+                <p>Nessun dato meteo disponibile</p>
+            )}
+
+            <PreferMeteo
+                preferiti={preferiti}
                 onSeleziona={(c) => setCoordinate(c)}
-                onRimuovi={rimuoviPreferito} /></div>
+                onRimuovi={rimuoviPreferito}
+            />
+        </div>
     );
 }
-
-
-
-

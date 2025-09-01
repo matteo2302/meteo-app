@@ -12,29 +12,30 @@ function CardMeteo({ citta, isPreferito, onRimuovi, onAggiungi }) {
                     alt={citta.nome}
                     style={{ height: "200px", objectFit: "cover" }}
                 />
-            )}            <Card.Body>
+            )}
+            <Card.Body>
                 <Card.Title>{citta.nome}</Card.Title>
             </Card.Body>
             <ListGroup className="list-group-flush">
-                <ListGroup.Item>🌡️ {citta.temperature}°C  </ListGroup.Item>
-                <ListGroup.Item>💨 Vento: {citta.windspeed} km/h</ListGroup.Item>
+                <ListGroup.Item>🌡️ {citta.temperature ?? "N/D"}°C</ListGroup.Item>
+                <ListGroup.Item>💨 Vento: {citta.windspeed ?? "N/D"} km/h</ListGroup.Item>
             </ListGroup>
             <Card.Body>
                 <div className="d-flex gap-2">
-                    <Button as={Link} to={`/DettagliMeteo/${citta.nome}`} variant="primary">
+                    <Button
+                        as={Link}
+                        to={`/DettagliMeteo/${citta.nome}`}
+                        state={{ latitude: citta.latitude, longitude: citta.longitude }}
+                        variant="primary"
+                    >
                         Dettagli
                     </Button>
                     {isPreferito ? (
-                        <Button variant="danger" onClick={() => onRimuovi(citta.nome)}>
-                            Rimuovi ⭐
-                        </Button>
+                        <Button variant="danger" onClick={() => onRimuovi(citta.nome)}>Rimuovi ⭐</Button>
                     ) : (
-                        <Button variant="success" onClick={() => onAggiungi(citta)}>
-                            Aggiungi ⭐
-                        </Button>
+                        <Button variant="success" onClick={() => onAggiungi(citta)}>Aggiungi ⭐</Button>
                     )}
                 </div>
-
             </Card.Body>
         </Card>
     );

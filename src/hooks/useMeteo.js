@@ -1,5 +1,5 @@
-import { type } from "@testing-library/user-event/dist/type";
 import { useReducer, useEffect } from "react";
+
 function reducer(state, action) {
     switch (action.type) {
         case "LOADING":
@@ -8,64 +8,60 @@ function reducer(state, action) {
             return { ...state, caricamento: false, meteo: action.payload };
         case "ERROR":
             return { ...state, caricamento: false, errore: action.payload };
-        default: return state;
+        default:
+            return state;
     }
 }
 
-function useMeteo(coordinate) {
-    let initialState = {
-        meteo: {
-            hourly: { time: [], temperature_2m: [] }
-        },
+function useMeteo({ nome, latitude, longitude }) {
+    const initialState = {
+        meteo: { hourly: { time: [], temperature_2m: [] } },
         caricamento: false,
         errore: null,
-    }
+    };
     const [state, dispatch] = useReducer(reducer, initialState);
 
-
     useEffect(() => {
-        if (coordinate.latitude && coordinate.longitude) {
-            let fetchMeteo = async () => {
-                dispatch({ type: "LOADING" });
-                try {
-                    let meteoPromise = await fetch(
-                        `https://api.open-meteo.com/v1/forecast?latitude=${coordinate.latitude}&longitude=${coordinate.longitude}&current_weather=true&hourly=temperature_2m`
-                    ).then(res => res.json());
+        if (!latitude || !longitude) return; // esci se coordinate non disponibili
 
-                    let imagePromise = await fetch(
-                        `https://api.unsplash.com/search/photos?query=${coordinate.nome}&client_id=9zAzArCOCHTpXyhjUSraVs9690aUNICS6oK4DYnWNMw`
-                    ).then(res => res.json());
+        const fetchMeteo = async () => {
+            dispatch({ type: "LOADING" });
+            try {
+                const meteoPromise = fetch(
+                    `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m&current_weather=true`
+                ).then(res => res.json());
 
-                    let [dataMeteo, dataImage] = await Promise.all([meteoPromise, imagePromise]);
+                const imagePromise = fetch(
+                    `https://api.unsplash.com/search/photos?query=${nome}&client_id=9zAzArCOCHTpXyhjUSraVs9690aUNICS6oK4DYnWNMw`
+                ).then(res => res.json());
 
-                    let imageUrl = dataImage.results.length > 0 ? dataImage.results[0].urls.small : null;
+                const [dataMeteo, dataImage] = await Promise.all([meteoPromise, imagePromise]);
+                const imageUrl = dataImage.results.length > 0 ? dataImage.results[0].urls.small : null;
 
-                    dispatch({
-                        type: "SUCCESS",
-                        payload: {
-                            ...dataMeteo.current_weather,
-                            hourly: dataMeteo.hourly,
-                            nome: coordinate.nome,
-                            image: imageUrl,
-                            latitude: coordinate.latitude,
-                            longitude: coordinate.longitude,
-                        },
-                    });
-                } catch (err) {
-                    dispatch({ type: "ERROR", payload: "Errore nel caricamento dei dati" });
-                }
-            };
+                dispatch({
+                    type: "SUCCESS",
+                    payload: {
+                        ...dataMeteo.current_weather,
+                        hourly: dataMeteo.hourly,
+                        nome,
+                        image: imageUrl,
+                        latitude,
+                        longitude,
+                    },
+                });
+            } catch (err) {
+                dispatch({ type: "ERROR", payload: "Errore nel caricamento dei dati" });
+            }
+        };
 
-            fetchMeteo();
-        }
-    }, [coordinate]);
+        fetchMeteo();
+    }, [nome, latitude, longitude]);
 
     return {
         meteo: state.meteo,
         caricamento: state.caricamento,
-        errore: state.errore
+        errore: state.errore,
     };
 }
-
 
 export default useMeteo;
