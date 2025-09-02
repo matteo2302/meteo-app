@@ -28,7 +28,7 @@ function useMeteo({ nome, latitude, longitude }) {
             dispatch({ type: "LOADING" });
             try {
                 const meteoPromise = fetch(
-                    `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m&current_weather=true`
+                    `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true&hourly=temperature_2m,windspeed_10m,precipitation`
                 ).then(res => res.json());
 
                 const imagePromise = fetch(
