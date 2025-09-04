@@ -6,35 +6,14 @@ import Preferiti from "./pages/Preferiti";
 import DettagliMeteo from './pages/DettagliMeteo';
 import useMeteo from './hooks/useMeteo';
 import { Navbar, Nav, Container } from 'react-bootstrap';
+import UsePreferiti from './hooks/UsePreferiti';
 import './App.css';
 
 function App() {
   const [coordinate, setCoordinate] = useState({ latitude: null, longitude: null, nome: "" });
-  const [preferiti, setPreferiti] = useState(() => {
-    const saved = localStorage.getItem("preferiti");
-    return saved ? JSON.parse(saved) : [];
-  });
 
   const { meteo, caricamento, errore } = useMeteo(coordinate);
-
-  const aggiungiPreferito = (citta) => {
-    if (!preferiti.some(p => p.nome === citta.nome)) {
-      const nuovaCitta = {
-        ...citta,
-        latitude: citta.latitude ?? citta.lat,
-        longitude: citta.longitude ?? citta.lon
-      };
-      const nuoviPreferiti = [...preferiti, nuovaCitta];
-      setPreferiti(nuoviPreferiti);
-      localStorage.setItem("preferiti", JSON.stringify(nuoviPreferiti));
-    }
-  };
-
-  const rimuoviPreferito = (nome) => {
-    const nuoviPreferiti = preferiti.filter(c => c.nome !== nome);
-    setPreferiti(nuoviPreferiti);
-    localStorage.setItem("preferiti", JSON.stringify(nuoviPreferiti));
-  };
+  const { preferiti, aggiungiPreferito, rimuoviPreferito, isPreferito } = UsePreferiti();
 
   return (
     <Router>
