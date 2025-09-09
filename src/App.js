@@ -8,6 +8,7 @@ import useMeteo from './hooks/useMeteo';
 import { Navbar, Nav, Container } from 'react-bootstrap';
 import UsePreferiti from './hooks/UsePreferiti';
 import UseGeolocalizzazione from './hooks/UseGeolocalizzazione';
+import 'leaflet/dist/leaflet.css';
 import './App.css';
 
 function App() {
@@ -45,6 +46,7 @@ function App() {
               aggiungiPreferito={aggiungiPreferito}
               preferiti={preferiti}
               rimuoviPreferito={rimuoviPreferito}
+              coordinate={coordinate}
             />
           } />
           <Route path="/preferiti" element={
