@@ -1,5 +1,5 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import Home from "./pages/Home";
 import Preferiti from "./pages/Preferiti";
@@ -7,14 +7,18 @@ import DettagliMeteo from './pages/DettagliMeteo';
 import useMeteo from './hooks/useMeteo';
 import { Navbar, Nav, Container } from 'react-bootstrap';
 import UsePreferiti from './hooks/UsePreferiti';
+import UseGeolocalizzazione from './hooks/UseGeolocalizzazione';
 import './App.css';
 
 function App() {
   const [coordinate, setCoordinate] = useState({ latitude: null, longitude: null, nome: "" });
 
   const { meteo, caricamento, errore } = useMeteo(coordinate);
-  const { preferiti, aggiungiPreferito, rimuoviPreferito, isPreferito } = UsePreferiti();
 
+  const { preferiti, aggiungiPreferito, rimuoviPreferito, isPreferito } = UsePreferiti();
+  useEffect(() => {
+    UseGeolocalizzazione(setCoordinate);
+  }, []);
   return (
     <Router>
       <Navbar bg="dark" data-bs-theme="dark" expand="lg">

@@ -22,7 +22,8 @@ function useMeteo({ nome, latitude, longitude }) {
     const [state, dispatch] = useReducer(reducer, initialState);
 
     useEffect(() => {
-        if (!latitude || !longitude) return; // esci se coordinate non disponibili
+        if (!latitude || !longitude) return;
+
 
         const fetchMeteo = async () => {
             dispatch({ type: "LOADING" });
