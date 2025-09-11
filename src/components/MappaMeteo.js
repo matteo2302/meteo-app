@@ -84,22 +84,23 @@ function MappaMeteo({ onSelect, coordinate }) {
                     ))}
                 </ul>
             )}
+            <div className="mappa-wrapper">
 
-            <MapContainer
-                className="leaflet-container"
-                center={center}
-                zoom={marker ? 12 : 6}
-                scrollWheelZoom={true}
-                style={{ height: "400px" }}
-            >
-                <ChangeView center={center} zoom={marker ? 12 : 6} />
-                <TileLayer
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                />
-                <ClickHandler onSelect={onSelect} setMarker={setMarker} />
-                {marker && <Marker position={marker} />}
-            </MapContainer>
+                <MapContainer
+                    className="leaflet-container"
+                    center={center}
+                    zoom={marker ? 12 : 6}
+                    scrollWheelZoom={true}
+                >
+                    <ChangeView center={center} zoom={marker ? 12 : 6} />
+                    <TileLayer
+                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    />
+                    <ClickHandler onSelect={onSelect} setMarker={setMarker} />
+                    {marker && <Marker position={marker} />}
+                </MapContainer>
+            </div>
         </div>
     );
 }
