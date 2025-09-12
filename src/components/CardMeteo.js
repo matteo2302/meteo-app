@@ -1,8 +1,32 @@
 import { Card, Button } from 'react-bootstrap';
 import ListGroup from 'react-bootstrap/ListGroup';
 import { Link } from 'react-router-dom';
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
-function CardMeteo({ citta, isPreferito, onRimuovi, onAggiungi }) {
+function CardMeteo({ citta, isPreferito, onRimuovi, onAggiungi, loading }) {
+    if (loading) {
+        return (
+            <Card style={{ width: '18rem' }} className="p-3">
+                <Skeleton height={200} /> {/* immagine finta */}
+                <Card.Body>
+                    <Card.Title>
+                        <Skeleton height={25} width={120} />
+                    </Card.Title>
+                </Card.Body>
+                <ListGroup className="list-group-flush">
+                    <ListGroup.Item><Skeleton height={20} width={100} /></ListGroup.Item>
+                    <ListGroup.Item><Skeleton height={20} width={120} /></ListGroup.Item>
+                </ListGroup>
+                <Card.Body>
+                    <div className="d-flex gap-2">
+                        <Skeleton height={38} width={100} />
+                        <Skeleton height={38} width={120} />
+                    </div>
+                </Card.Body>
+            </Card>
+        );
+    }
     return (
         <Card style={{ width: '18rem' }}>
             {citta.image && (

@@ -26,6 +26,7 @@ export default function Home({ meteo,
                     onAggiungi={aggiungiPreferito}
                     onRimuovi={rimuoviPreferito}
                     isPreferito={preferiti.some(p => p.nome === meteo.nome)}
+                    loading={caricamento}
                 />
             ) : (
                 <p>Nessun dato meteo disponibile</p>
