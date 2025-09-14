@@ -19,28 +19,30 @@ export default function Home({ meteo,
             {caricamento && <p className="text-center">Caricamento...</p>}
             {errore && <p>{errore}</p>}
 
-            <h2>Risultati ricerca</h2>
-            {meteo ? (
-                <CardMeteo
-                    citta={meteo}
-                    onAggiungi={aggiungiPreferito}
-                    onRimuovi={rimuoviPreferito}
-                    isPreferito={preferiti.some(p => p.nome === meteo.nome)}
-                    loading={caricamento}
-                />
-            ) : (
-                <p>Nessun dato meteo disponibile</p>
-            )}
-            <h2>Seleziona sulla mappa</h2>
-            <div className='mappa-wrapper'>
-                <MappaMeteo onSelect={setCoordinate} coordinate={meteo ? coordinate : {}} />
+
+            <div className="d-flex">
+                <div>
+                    <h2>Seleziona sulla mappa</h2>
+                    <div className='mappa-wrapper'>
+                        <MappaMeteo onSelect={setCoordinate} coordinate={meteo ? coordinate : {}} />
+                    </div>
+                </div>
+                <div>
+                    <h2>Risultati ricerca</h2>
+                    {meteo ? (
+                        <CardMeteo
+                            citta={meteo}
+                            onAggiungi={aggiungiPreferito}
+                            onRimuovi={rimuoviPreferito}
+                            isPreferito={preferiti.some(p => p.nome === meteo.nome)}
+                            loading={caricamento}
+                        />
+                    ) : (
+                        <p>Nessun dato meteo disponibile</p>
+                    )}
+                </div>
             </div>
 
-            <PreferMeteo
-                preferiti={preferiti}
-                onSeleziona={(c) => setCoordinate(c)}
-                onRimuovi={rimuoviPreferito}
-            />
         </div>
     );
 }
