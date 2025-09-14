@@ -1,7 +1,5 @@
 import { useState } from "react"
-import Form from 'react-bootstrap/Form';
-import InputGroup from 'react-bootstrap/InputGroup';
-import Button from 'react-bootstrap/Button';
+import { Form, InputGroup, Button } from 'react-bootstrap';
 
 
 function FormMeteo({ setCoordinate }) {
@@ -25,8 +23,8 @@ function FormMeteo({ setCoordinate }) {
     return (
         <div>
 
-            <form onSubmit={handleSubmit}>
-                <InputGroup className="mb-3">
+            <form onSubmit={handleSubmit} className="d-flex justify-content-center">
+                <InputGroup className="mb-3 search-group">
                     <Form.Control
                         placeholder="cerca citta!"
                         aria-label="cerca citta!"
