@@ -20,14 +20,14 @@ export default function Home({ meteo,
             {errore && <p>{errore}</p>}
 
 
-            <div className="d-flex">
+            <div className="d-flex justify-content-around">
                 <div>
                     <h2>Seleziona sulla mappa</h2>
                     <div className='mappa-wrapper'>
                         <MappaMeteo onSelect={setCoordinate} coordinate={meteo ? coordinate : {}} />
                     </div>
                 </div>
-                <div>
+                <div className='d-flex flex-column align-items-center justify-content-center'>
                     <h2>Risultati ricerca</h2>
                     {meteo ? (
                         <CardMeteo

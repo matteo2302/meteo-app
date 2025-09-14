@@ -1,4 +1,8 @@
 import { useState } from "react"
+import Form from 'react-bootstrap/Form';
+import InputGroup from 'react-bootstrap/InputGroup';
+import Button from 'react-bootstrap/Button';
+
 
 function FormMeteo({ setCoordinate }) {
     let [citta, setCitta] = useState("");
@@ -19,10 +23,22 @@ function FormMeteo({ setCoordinate }) {
         }
     }
     return (
-        <form className="text-center" onSubmit={handleSubmit}>
-            <input onChange={(e) => setCitta(e.target.value)} value={citta} type="text" placeholder="inserire la città" />
-            <button type='submit'>cerca</button>
-        </form>
+        <div>
+
+            <form onSubmit={handleSubmit}>
+                <InputGroup className="mb-3">
+                    <Form.Control
+                        placeholder="cerca citta!"
+                        aria-label="cerca citta!"
+                        aria-describedby="basic-addon2"
+                        onChange={(e) => setCitta(e.target.value)} value={citta}
+                    />
+                    <Button variant="primary" type="submit">
+                        Cerca
+                    </Button>
+                </InputGroup>
+            </form>
+        </div>
     )
 }
 export default FormMeteo;
