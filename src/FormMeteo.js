@@ -1,25 +1,35 @@
 import { useState } from "react"
 import { Form, InputGroup, Button } from 'react-bootstrap';
-
+import { searchCity } from "./hooks/searchCity";
 
 function FormMeteo({ setCoordinate }) {
     let [citta, setCitta] = useState("");
+    let [risultati, setRisultati] = useState([]);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (citta.trim() === "") return;
         try {
-            let res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${citta}`);
-            let data = await res.json();
-            if (!data.results || data.results.length === 0) {
+            let data = await searchCity(citta);
+            if (!data || data.length === 0) {
                 throw new Error("Città non trovata");
             }
-            let { latitude, longitude, name } = data.results[0];
-            setCoordinate({ latitude, longitude, nome: name });
+            setRisultati(data.slice(0, 5));
+            /*let { latitude, longitude, name } = data.results[0];
+            setCoordinate({ latitude, longitude, nome: name });*/
 
         } catch (err) {
             console.error("Errore:", err.message);
         }
     }
+    const handleSelect = (result) => {
+        const lat = parseFloat(result.lat);
+        const lon = parseFloat(result.lon);
+        const nome = result.display_name.split(",")[0];
+        setCoordinate({ latitude: lat, longitude: lon, nome });
+        setRisultati([]);
+        setCitta(nome);
+    };
     return (
         <div>
 
@@ -36,6 +46,15 @@ function FormMeteo({ setCoordinate }) {
                     </Button>
                 </InputGroup>
             </form>
+            {risultati.length > 0 && (
+                <ul className="search-results">
+                    {risultati.map((r) => (
+                        <li key={r.place_id} onClick={() => handleSelect(r)}>
+                            {r.display_name}
+                        </li>
+                    ))}
+                </ul>
+            )}
         </div>
     )
 }

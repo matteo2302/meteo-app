@@ -26,6 +26,7 @@ function App() {
   return (
     <Router>
       <div className={`App ${tema}`}>
+
         <Navbar bg="dark" data-bs-theme="dark" expand="lg">
           <Container>
             <Navbar.Brand href="#">🌤️ MeteoApp</Navbar.Brand>

@@ -24,8 +24,7 @@ export default function Home({ meteo,
                 <div>
                     <h2>Seleziona sulla mappa</h2>
                     <div className='mappa-wrapper'>
-                        <MappaMeteo onSelect={setCoordinate} coordinate={meteo ? coordinate : {}} />
-                    </div>
+                        <MappaMeteo onSelect={setCoordinate} coordinate={coordinate} />                    </div>
                 </div>
                 <div className='d-flex flex-column align-items-center justify-content-center'>
                     <h2>Risultati ricerca</h2>

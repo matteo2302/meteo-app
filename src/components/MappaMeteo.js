@@ -32,14 +32,11 @@ function ClickHandler({ onSelect, setMarker }) {
 }
 
 function MappaMeteo({ onSelect, coordinate }) {
-    const initialMarker =
+    const [marker, setMarker] = useState(
         coordinate && coordinate.latitude && coordinate.longitude
             ? [coordinate.latitude, coordinate.longitude]
-            : null;
-    const [marker, setMarker] = useState(initialMarker);
-
-    const [query, setQuery] = useState("");
-    const [results, setResults] = useState([]);
+            : null
+    );
 
     useEffect(() => {
         if (coordinate && coordinate.latitude && coordinate.longitude) {
@@ -49,7 +46,7 @@ function MappaMeteo({ onSelect, coordinate }) {
 
     const center = marker || [44.1, 8.27];
 
-    async function handleSearch(e) {
+    /*async function handleSearch(e) {
         e.preventDefault();
         if (!query.trim()) return;
         const data = await searchCity(query);
@@ -64,31 +61,11 @@ function MappaMeteo({ onSelect, coordinate }) {
         onSelect({ latitude: lat, longitude: lon, nome });
         setResults([]);
         setQuery(nome);
-    }
+    }*/
 
 
     return (
         <div>
-
-            <form onSubmit={handleSearch} style={{ marginBottom: "8px" }}>
-                <input
-                    type="text"
-                    value={query}
-                    onChange={(e) => setQuery(e.target.value)}
-                    placeholder="Cerca città..."
-                />
-                <button type="submit">🔍</button>
-            </form>
-
-            {results.length > 0 && (
-                <ul className="search-results">
-                    {results.slice(0, 5).map((r) => (
-                        <li key={r.place_id} onClick={() => handleSelect(r)}>
-                            {r.display_name}
-                        </li>
-                    ))}
-                </ul>
-            )}
             <div className="mappa-wrapper">
 
                 <MapContainer
