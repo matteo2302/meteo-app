@@ -1,6 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { MapContainer, TileLayer, Marker, useMapEvents, useMap } from "react-leaflet";
 import { searchCity } from "../hooks/searchCity";
+import L from "leaflet";
+
+
+const defaultIcon = L.icon({
+    iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+    shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+});
 
 function ChangeView({ center, zoom }) {
     const map = useMap();
@@ -58,10 +67,6 @@ function MappaMeteo({ onSelect, coordinate }) {
     }
 
 
-
-
-
-
     return (
         <div>
 
@@ -98,7 +103,7 @@ function MappaMeteo({ onSelect, coordinate }) {
                         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                     />
                     <ClickHandler onSelect={onSelect} setMarker={setMarker} />
-                    {marker && <Marker position={marker} />}
+                    {marker && <Marker position={marker} icon={defaultIcon} />}
                 </MapContainer>
             </div>
         </div>
