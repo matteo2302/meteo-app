@@ -23,9 +23,33 @@ function ChangeView({ center, zoom }) {
 
 function ClickHandler({ onSelect, setMarker }) {
     useMapEvents({
-        click(e) {
+        async click(e) {
             const { lat, lng } = e.latlng;
-            onSelect({ latitude: lat, longitude: lng, nome: `(${lat.toFixed(2)}, ${lng.toFixed(2)})` });
+            setMarker([lat, lng]);
+
+            try {
+                let response = await fetch(
+                    `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&accept-language=it`
+                );
+                let data = await response.json();
+
+                const nome =
+                    data.address.city ||
+                    data.address.town ||
+                    data.address.village ||
+                    data.address.hamlet ||
+                    data.display_name.split(",")[0];
+
+                onSelect({ latitude: lat, longitude: lng, nome });
+
+            } catch (error) {
+                console.error("Errore nel reverse geocoding:", error);
+                onSelect({
+                    latitude: lat,
+                    longitude: lng,
+                    nome: `(${lat.toFixed(2)}, ${lng.toFixed(2)})`
+                });
+            }
         }
     });
     return null;
@@ -46,22 +70,6 @@ function MappaMeteo({ onSelect, coordinate }) {
 
     const center = marker || [44.1, 8.27];
 
-    /*async function handleSearch(e) {
-        e.preventDefault();
-        if (!query.trim()) return;
-        const data = await searchCity(query);
-        setResults(data);
-    }
-
-    function handleSelect(result) {
-        const lat = parseFloat(result.lat);
-        const lon = parseFloat(result.lon);
-        const nome = result.display_name.split(",")[0];
-        setMarker([lat, lon]);
-        onSelect({ latitude: lat, longitude: lon, nome });
-        setResults([]);
-        setQuery(nome);
-    }*/
 
 
     return (
