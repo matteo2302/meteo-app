@@ -47,13 +47,12 @@ function FormMeteo({ setCoordinate }) {
                 </InputGroup>
             </form>
             {risultati.length > 0 && (
-                <ul className="search-results">
+                <div className="search-results d-flex flex-column align-items-center">
                     {risultati.map((r) => (
-                        <li key={r.place_id} onClick={() => handleSelect(r)}>
-                            {r.display_name}
-                        </li>
+                        <Button className="btn-results" key={r.place_id} onClick={() => handleSelect(r)} variant="light">{r.display_name}</Button>
+
                     ))}
-                </ul>
+                </div>
             )}
         </div>
     )
